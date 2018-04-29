@@ -21,7 +21,7 @@ Observable.prototype.debug = function(message: string) {
       if (debuggerOn) console.error(message, error);
     },
     () => {
-      if (debuggerOn) console.log("Observalbe completed - ", message);
+      if (debuggerOn) console.error("Observalbe completed - ", message);
     }
   );
 };

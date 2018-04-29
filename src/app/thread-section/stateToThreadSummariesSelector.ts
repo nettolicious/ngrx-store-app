@@ -13,10 +13,12 @@ function mapThreadToThreadSummary(state: ApplicationState, thread: Thread): Thre
     .map(participantId => state.storeData.participants[participantId].name);
   const lastMessageId = _.last(thread.messageIds);
   const lastMessage = state.storeData.messages[lastMessageId];
-  return {
+  const threadSummary = {
     id: thread.id,
     participantNames: _.join(names, ","),
     lastMessageText: lastMessage.text,
     timestamp: lastMessage.timestamp
   };
+  console.log("Mapped thread to thread summary", threadSummary);
+  return threadSummary;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import * as _ from 'lodash';
@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { ThreadsService } from '../services/threads.service';
 
 import { ApplicationState } from '../store/application-state';
-import { UserThreadsLoadedAction, LoadUserThreadsAction } from '../store/actions';
+import { UserThreadsLoadedAction, LoadUserThreadsAction, ThreadSelectedAction } from '../store/actions';
 import { Thread } from '../../../shared/model/thread';
 import { ThreadSummaryVM } from './thread-summary.vm';
 import { userNameSelector } from './userNameSelector';
@@ -18,25 +18,21 @@ import { stateToThreadSummariesSelector } from './stateToThreadSummariesSelector
   templateUrl: './thread-section.component.html',
   styleUrls: ['./thread-section.component.scss']
 })
-export class ThreadSectionComponent implements OnInit {
+export class ThreadSectionComponent {
 
   userName$: Observable<string>;
   unreadMessagesCounter$: Observable<number>;
   threadSummaries$: Observable<ThreadSummaryVM[]>;
+  currentSelectedThreadId$: Observable<number>;
 
   constructor(private store: Store<ApplicationState>) {
     this.userName$ = store.select(userNameSelector);
     this.unreadMessagesCounter$ = store.map(mapStateToUnreadMessagesCounter);
     this.threadSummaries$ = store.select(stateToThreadSummariesSelector);
+    this.currentSelectedThreadId$ = store.select(state => state.uiState.currentThreadId);
   }
 
-  ngOnInit() {
-    this.store.dispatch(new LoadUserThreadsAction());
-    // this.threadsService.loadUserThreads()
-    //   .subscribe(allUserData => {
-    //     console.log('thread section init allUserData', allUserData);
-    //     this.store.dispatch(new UserThreadsLoadedAction(allUserData));
-    //   });
+  onThreadSelected(selectedThreadId: number) {
+    this.store.dispatch(new ThreadSelectedAction(selectedThreadId));
   }
-
 }
